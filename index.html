@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>COLLEGE MARKET</title>
+<script src="https://smtpjs.com/v3/smtp.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background: #f4f7f8;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    background: #007bff;
+    color: white;
+    padding: 1rem 2rem;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    user-select: none;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  }
+  main {
+    flex-grow: 1;
+    padding: 1rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  button, input[type="submit"], .btn {
+    cursor: pointer;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 0.5rem 1.3rem;
+    border-radius: 5px;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+  }
+  button:hover, input[type="submit"]:hover, .btn:hover {
+    background: #0056b3;
+  }
+  input, select, textarea {
+    padding: 0.6rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    margin-bottom: 1rem;
+    font-family: 'Roboto', sans-serif;
+  }
+  label {
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+    display: block;
+    color: #222;
+  }
+  .hidden {
+    display: none !important;
+  }
+  .flex-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .product-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgb(0 0 0 / 0.1);
+    padding: 1rem;
+    width: 100%;
+    max-width: 280px;
+    display: flex;
+    flex-direction: column;
+    user-select:none;
+    transition: transform 0.2s ease;
+  }
+  .product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+  }
+  .product-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+  }
+  .product-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.2rem;
+    color: #004085;
+  }
+  .product-price {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: #28a745;
+    font-weight: 700;
+  }
+  .product-desc {
+    font-size: 0.9rem;
+    color: #555;
+    flex-grow: 1;
+  }
+  .centered-container {
+    max-width: 440px;
+    margin: 1rem auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+  }
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  nav {
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+  }
+  nav button {
+    background: #17a2b8;
+  }
+  nav button.active, nav button:hover {
+    background: #117a8b;
+  }
+  footer {
+    text-align: center;
+    padding: 1rem 2rem;
+    background: #eee;
+    font-size: 0.9rem;
+    color: #444;
+  }
+  .otp-inputs input {
+    width: 3rem;
+    font-size: 1.5rem;
+    text-align: center;
+    margin-right: 0.5rem;
+  }
+  .error-message {
+    color: #d9534f;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .success-message {
+    color: #28a745;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  img.preview {
+    max-width: 100%;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+  }
+  .product-details-modal {
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    z-index: 1000;
+  }
+  .modal-content {
+    background: white;
+    border-radius: 10px;
+    max-width: 560px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 1rem 2rem 2rem 2rem;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute;
+    top: 0.6rem;
+    right: 1rem;
+    font-size: 1.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    color: #666;
+  }
+  .contact-button {
+    background: #25D366; /* WhatsApp green */
+    margin-top: 1rem;
+    width: 100%;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .contact-button:hover {
+    background: #128c4a;
+  }
+  .welcome-heading {
+    text-align: center;
+    color: #0056b3;
+    margin-bottom: 2rem;
+    font-weight: 900;
+  }
+</style>
+</head>
+<body>
+<header>
+  COLLEGE MARKET
+</header>
+
+<main>
+  <nav aria-label="Main navigation">
+    <button id="nav-browse" class="active" type="button" aria-pressed="true">Browse Products</button>
+    <button id="nav-upload" type="button" aria-pressed="false">Sell a Product</button>
+    <button id="nav-login" type="button" aria-pressed="false">Login / Register</button>
+  </nav>
+
+  <section id="browse-section">
+    <h2 class="welcome-heading">Browse Products</h2>
+    <div id="products-list" class="flex-row" aria-live="polite" aria-label="Products listing">
+      <!-- Product cards will be dynamically inserted here -->
+    </div>
+  </section>
+
+  <section id="upload-section" class="hidden" aria-label="Product upload form">
+    <h2>Sell Your Product</h2>
+    <form id="product-upload-form" autocomplete="off" aria-describedby="upload-instruction">
+      <div id="upload-instruction" class="success-message">Fill the form to upload your product details.</div>
+      <div class="form-group">
+        <label for="upload-title">Product Title *</label>
+        <input type="text" id="upload-title" name="title" placeholder="E.g. Old Laptop" required />
+      </div>
+      <div class="form-group">
+        <label for="upload-description">Description *</label>
+        <textarea id="upload-description" name="description" rows="3" placeholder="Describe your product" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="upload-price">Price (₹) *</label>
+        <input type="number" id="upload-price" name="price" placeholder="E.g. 3500" min="0" required />
+      </div>
+      <div class="form-group">
+        <label for="upload-photo">Upload Photo *</label>
+        <input type="file" id="upload-photo" name="photo" accept="image/*" required />
+        <img id="photo-preview" class="preview hidden" alt="Image preview"/>
+      </div>
+      <h3>Your Contact Details</h3>
+      <div class="form-group">
+        <label for="seller-email">Email *</label>
+        <input type="email" id="seller-email" name="email" placeholder="Your email" required />
+      </div>
+      <div class="form-group">
+        <label for="seller-phone">Phone *</label>
+        <input type="tel" id="seller-phone" name="phone" placeholder="Your phone number" required />
+      </div>
+      <button type="submit">Upload Product</button>
+    </form>
+  </section>
+
+  <section id="login-section" class="hidden" aria-label="User login and registration">
+    <h2>Login / Register</h2>
+    <div id="login-steps">
+      <form id="login-email-form" autocomplete="off">
+        <div class="form-group">
+          <label for="login-email">Enter your Email *</label>
+          <input type="email" id="login-email" name="email" placeholder="Your email" required />
+        </div>
+        <button type="submit">Send OTP</button>
+      </form>
+
+      <form id="login-otp-form" class="hidden" autocomplete="off">
+        <div class="form-group">
+          <label for="otp-input">Enter OTP sent to your email *</label>
+          <input type="text" id="otp-input" name="otp" placeholder="OTP (4 digits)" pattern="\\d{4}" maxlength="4" autocomplete="off" required />
+        </div>
+        <button type="submit">Verify OTP</button>
+      </form>
+
+      <form id="user-details-form" class="hidden" autocomplete="off">
+        <p>Welcome, please complete your profile details:</p>
+        <div class="form-group">
+          <label for="profile-name">Full Name *</label>
+          <input type="text" id="profile-name" name="name" placeholder="Your full name" required />
+        </div>
+        <div class="form-group">
+          <label for="profile-phone">Phone Number *</label>
+          <input type="tel" id="profile-phone" name="phone" placeholder="Your phone number" required />
+        </div>
+        <div class="form-group">
+          <label for="profile-email">Email (auto-filled) *</label>
+          <input type="email" id="profile-email" name="email" readonly />
+        </div>
+        <div class="form-group">
+          <label for="profile-college">College Name *</label>
+          <input type="text" id="profile-college" name="college" placeholder="Your college name" required />
+        </div>
+        <button type="submit">Save Profile & Login</button>
+      </form>
+    </div>
+    <div id="login-message" role="alert" aria-live="assertive"></div>
+  </section>
+
+  <div id="product-details-modal" class="product-details-modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-content">
+      <span class="modal-close" aria-label="Close modal">&times;</span>
+      <h2 id="modal-title"></h2>
+      <img id="modal-image" alt="Product photo" class="product-image" />
+      <p id="modal-description"></p>
+      <p><strong>Price:</strong> ₹<span id="modal-price"></span></p>
+      <p><strong>Seller Contact:</strong> <span id="modal-contact"></span></p>
+      <button id="contact-seller-btn" class="contact-button hidden" aria-hidden="true">Contact Seller via WhatsApp</button>
+    </div>
+  </div>
+</main>
+<footer>
+  &copy; 2024 Buy & Sell Used Products. All rights reserved.
+</footer>
+
+<script>
+  "use strict";
+
+  // Data storage keys
+  const STORAGE_PRODUCTS = 'bs_old_products';
+  const STORAGE_USERS = 'bs_users';
+  const STORAGE_SESSION = 'bs_session';
+
+  // OTP config (simulate with 4-digit code)
+  const OTP_LENGTH = 4;
+  const SIMULATED_OTP = '1234'; // for demo
+
+  // References to UI elements
+  const navBrowse = document.getElementById('nav-browse');
+  const navUpload = document.getElementById('nav-upload');
+  const navLogin = document.getElementById('nav-login');
+
+  const browseSection = document.getElementById('browse-section');
+  const uploadSection = document.getElementById('upload-section');
+  const loginSection = document.getElementById('login-section');
+
+  const productsList = document.getElementById('products-list');
+
+  const productUploadForm = document.getElementById('product-upload-form');
+  const photoInput = document.getElementById('upload-photo');
+  const photoPreview = document.getElementById('photo-preview');
+
+  const loginEmailForm = document.getElementById('login-email-form');
+  const loginOtpForm = document.getElementById('login-otp-form');
+  const userDetailsForm = document.getElementById('user-details-form');
+  const loginMessage = document.getElementById('login-message');
+
+  const otpInput = document.getElementById('otp-input');
+
+  // Modal elements
+  const productDetailsModal = document.getElementById('product-details-modal');
+  const modalClose = productDetailsModal.querySelector('.modal-close');
+  const modalTitle = document.getElementById('modal-title');
+  const modalImage = document.getElementById('modal-image');
+  const modalDescription = document.getElementById('modal-description');
+  const modalPrice = document.getElementById('modal-price');
+  const modalContact = document.getElementById('modal-contact');
+  const contactSellerBtn = document.getElementById('contact-seller-btn');
+
+  // Current product displayed in modal
+  let currentProduct = null;
+
+  // Current session user object or null
+  let currentUser = null;
+
+  // Store OTP for validation in login flow
+  let currentOtp = null;
+  let currentLoginEmail = null;
+
+  // Utility: Load users from localStorage or initialize empty
+  function loadUsers() {
+    const users = localStorage.getItem(STORAGE_USERS);
+    return users ? JSON.parse(users) : [];
+  }
+  function saveUsers(users) {
+    localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
+  }
+  // Store Products
+  function loadProducts() {
+    const products = localStorage.getItem(STORAGE_PRODUCTS);
+    return products ? JSON.parse(products) : [];
+  }
+  function saveProducts(products) {
+    localStorage.setItem(STORAGE_PRODUCTS, JSON.stringify(products));
+  }
+  // Session
+  function loadSession() {
+    const session = localStorage.getItem(STORAGE_SESSION);
+    return session ? JSON.parse(session) : null;
+  }
+  function saveSession(user) {
+    localStorage.setItem(STORAGE_SESSION, JSON.stringify(user));
+  }
+  function clearSession() {
+    localStorage.removeItem(STORAGE_SESSION);
+  }
+
+  // Add demo products if none exist
+  function addDemoProductsIfNone() {
+    let products = loadProducts();
+    if (products.length === 0) {
+      products = [
+        {
+          id: 'demo_1',
+          title: 'Used Laptop Dell Inspiron',
+          description: 'Dell Inspiron 15", 8GB RAM, 256GB SSD in good condition, battery lasts 4 hours, suitable for students and professionals.',
+          price: 20000,
+          photo: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80',
+          sellerEmail: 'seller1@example.com',
+          sellerPhone: '919876543210',
+          sellerName: 'Rajesh Kumar',
+          sellerCollege: 'ABC College'
+        },
+        {
+          id: 'demo_2',
+          title: 'Vintage Table Fan',
+          description: 'Classic branded table fan, working perfectly and well-maintained, ideal for home or office use.',
+          price: 1200,
+          photo: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80',
+          sellerEmail: 'seller2@example.com',
+          sellerPhone: '919812345678',
+          sellerName: 'Sneha Sharma',
+          sellerCollege: 'XYZ University'
+        },
+        {
+          id: 'demo_3',
+          title: 'Used Bicycle Giant',
+          description: 'Mountain bike Giant with gears, lightly used, perfect for commuting and fitness rides.',
+          price: 8500,
+          photo: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80',
+          sellerEmail: 'seller3@example.com',
+          sellerPhone: '919998877665',
+          sellerName: 'Ajay Singh',
+          sellerCollege: 'PQR Institute'
+        }
+      ];
+      saveProducts(products);
+    }
+  }
+
+  function setActiveNav(activeButton) {
+    [navBrowse, navUpload, navLogin].forEach(btn => {
+      btn.classList.remove('active');
+      btn.setAttribute('aria-pressed', 'false');
+    });
+    activeButton.classList.add('active');
+    activeButton.setAttribute('aria-pressed', 'true');
+  }
+
+  function showSection(section) {
+    browseSection.classList.add('hidden');
+    uploadSection.classList.add('hidden');
+    loginSection.classList.add('hidden');
+
+    section.classList.remove('hidden');
+  }
+
+  // Navigation events
+  navBrowse.onclick = () => {
+    setActiveNav(navBrowse);
+    showSection(browseSection);
+    renderProducts();
+  };
+  navUpload.onclick = () => {
+    if (!currentUser) {
+      alert('You must be logged in to sell a product.');
+      navLogin.click();
+      return;
+    }
+    setActiveNav(navUpload);
+    showSection(uploadSection);
+  };
+  navLogin.onclick = () => {
+    setActiveNav(navLogin);
+    showSection(loginSection);
+    showLoginStep('email');
+    loginMessage.textContent = '';
+  };
+
+  // Show login step: 'email', 'otp', 'details'
+  function showLoginStep(step) {
+    loginEmailForm.classList.add('hidden');
+    loginOtpForm.classList.add('hidden');
+    userDetailsForm.classList.add('hidden');
+
+    loginMessage.style.color = '#28a745'; // reset to green success
+    if (step === 'email') {
+      loginEmailForm.classList.remove('hidden');
+    } else if (step === 'otp') {
+      loginOtpForm.classList.remove('hidden');
+      otpInput.value = '';
+      otpInput.focus();
+    } else if (step === 'details') {
+      userDetailsForm.classList.remove('hidden');
+      // Fill auto-fills
+      document.getElementById('profile-email').value = currentLoginEmail || '';
+      // Clear or fill others
+      document.getElementById('profile-name').value = '';
+      document.getElementById('profile-phone').value = '';
+      document.getElementById('profile-college').value = '';
+      loginMessage.style.color = '#28a745';
+    }
+  }
+  // OTP config - replace with your actual SMTP credentials
+const OTP_CONFIG = {
+    EMAIL_ACCOUNTS: [
+      {
+        email: 'ujjalmandalair1@gmail.com',
+        smtpKey: 'fb97e8eb-a3e1-47ab-a309-232466db7bcd'
+      },
+      {
+        email: 'ujjalmandalair1@gmail.com',
+        smtpKey: 'fb97e8eb-a3e1-47ab-a309-232466db7bcd'
+      },
+      {
+        email: 'ujjalmandalair1@gmail.com',
+        smtpKey: 'fb97e8eb-a3e1-47ab-a309-232466db7bcd'
+      },
+      {
+        email: 'ujjalmandalair1@gmail.com',
+        smtpKey: 'fb97e8eb-a3e1-47ab-a309-232466db7bcd'
+      }
+    ],
+    OTP_LENGTH: 6,
+    OTP_EXPIRE_MINUTES: 5
+  };
+  
+  // Store OTPs with expiration
+  const otpStore = {};
+  
+  // Generate random OTP
+  function generateOtp() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  }
+  
+  // Send OTP via SMTP.js
+  function sendOtp(email) {
+    // Generate OTP
+    const otp = generateOtp();
+    const expires = Date.now() + OTP_CONFIG.OTP_EXPIRE_MINUTES * 60 * 1000;
+    
+    // Store OTP with expiration
+    otpStore[email] = { otp, expires };
+    
+    // Select a random email account from your 4 accounts
+    const senderAccount = OTP_CONFIG.EMAIL_ACCOUNTS[
+      Math.floor(Math.random() * OTP_CONFIG.EMAIL_ACCOUNTS.length)
+    ];
+    
+    // Email content
+    const emailContent = {
+      Subject: `Your OTP for College Market`,
+      Body: `
+        <p>Your One-Time Password (OTP) for College Market is:</p>
+        <h2 style="font-size: 24px; color: #007bff;">${otp}</h2>
+        <p>This OTP is valid for ${OTP_CONFIG.OTP_EXPIRE_MINUTES} minutes.</p>
+        <p>If you didn't request this, please ignore this email.</p>
+      `,
+      IsHtml: true
+    };
+    
+    // Send via SMTP.js
+    Email.send({
+      SecureToken: senderAccount.smtpKey,
+      To: email,
+      From: senderAccount.email,
+      ...emailContent
+    }).then(
+      message => {
+        console.log('OTP sent successfully', message);
+        currentOtp = otp;
+        currentLoginEmail = email;
+        showLoginStep('otp');
+        loginMessage.textContent = 'OTP sent to your email. Please check your inbox.';
+        loginMessage.style.color = '#28a745';
+      }
+    ).catch(
+      error => {
+        console.error('Failed to send OTP:', error);
+        loginMessage.textContent = 'Failed to send OTP. Please try again.';
+        loginMessage.style.color = '#d9534f';
+      }
+    );
+  }
+  
+  // Update your OTP verification
+  loginOtpForm.onsubmit = e => {
+    e.preventDefault();
+    const otpEntered = otpInput.value.trim();
+    const email = currentLoginEmail;
+    
+    // Check if OTP exists and isn't expired
+    if (!otpStore[email] || otpStore[email].expires < Date.now()) {
+      loginMessage.textContent = 'OTP expired. Please request a new one.';
+      loginMessage.style.color = '#d9534f';
+      return;
+    }
+    
+    if (otpEntered === otpStore[email].otp) {
+      // OTP verified, proceed with login
+      const user = findUserByEmail(email);
+      if (user && user.name && user.phone && user.college) {
+        currentUser = user;
+        saveSession(currentUser);
+        loginMessage.textContent = 'Login successful!';
+        showLoginStep(null);
+        setupUserStatusUI();
+        navBrowse.click();
+      } else {
+        showLoginStep('details');
+        loginMessage.textContent = 'Please complete your profile details.';
+      }
+      // Clear used OTP
+      delete otpStore[email];
+    } else {
+      loginMessage.textContent = 'Invalid OTP, please try again.';
+      loginMessage.style.color = '#d9534f';
+    }
+  };
+
+  
+
+  // Find user by email
+  function findUserByEmail(email) {
+    const users = loadUsers();
+    return users.find(u => u.email.toLowerCase() === email.toLowerCase());
+  }
+
+  // Save or update user profile
+  function saveUserProfile(profile) {
+    const users = loadUsers();
+    const existingIndex = users.findIndex(u => u.email.toLowerCase() === profile.email.toLowerCase());
+    if (existingIndex !== -1) {
+      users[existingIndex] = profile;
+    } else {
+      users.push(profile);
+    }
+    saveUsers(users);
+  }
+
+  // On login email form submit
+  loginEmailForm.onsubmit = e => {
+    e.preventDefault();
+    const email = loginEmailForm['email'].value.trim().toLowerCase();
+    if (!email) return;
+    sendOtp(email);
+    showLoginStep('otp');
+    loginMessage.textContent = 'OTP sent to your email (simulated). Please enter the OTP.';
+  };
+
+  // On OTP form submit
+  loginOtpForm.onsubmit = e => {
+    e.preventDefault();
+    const otpEntered = otpInput.value.trim();
+    if (otpEntered === currentOtp) {
+      // OTP verified, now check if user profile exists
+      const user = findUserByEmail(currentLoginEmail);
+      if (user && user.name && user.phone && user.college) {
+        currentUser = user;
+        saveSession(currentUser);
+        loginMessage.textContent = 'Login successful!';
+        showLoginStep(null);
+        setupUserStatusUI();
+        navBrowse.click();
+      } else {
+        // show profile form for details
+        showLoginStep('details');
+        loginMessage.textContent = 'Please complete your profile details.';
+      }
+    } else {
+      loginMessage.textContent = 'Invalid OTP, please try again.';
+      loginMessage.style.color = '#d9534f'; // red error color
+    }
+  };
+
+  // Profile details form submit - save profile & login
+  userDetailsForm.onsubmit = e => {
+    e.preventDefault();
+    const name = userDetailsForm['name'].value.trim();
+    const phone = userDetailsForm['phone'].value.trim();
+    const email = userDetailsForm['email'].value.trim().toLowerCase();
+    const college = userDetailsForm['college'].value.trim();
+
+    if (!name || !phone || !email || !college) {
+      loginMessage.textContent = 'Please fill in all fields.';
+      loginMessage.style.color = '#d9534f';
+      return;
+    }
+
+    // Save user and log in
+    currentUser = { name, phone, email, college };
+    saveUserProfile(currentUser);
+    saveSession(currentUser);
+    loginMessage.textContent = 'Profile saved and login successful!';
+    loginMessage.style.color = '#28a745';
+    showLoginStep(null);
+    setupUserStatusUI();
+    navBrowse.click();
+  };
+
+  // Logout function
+  function logout() {
+    currentUser = null;
+    clearSession();
+    alert('Logged out successfully.');
+    setupUserStatusUI();
+    navBrowse.click();
+  }
+
+  // Load session user on startup
+  function initSession() {
+    const savedUser = loadSession();
+    if (savedUser && savedUser.email) {
+      currentUser = savedUser;
+    }
+  }
+
+  // Product upload form: preview photo
+  photoInput.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) {
+      photoPreview.src = '';
+      photoPreview.classList.add('hidden');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = ev => {
+      photoPreview.src = ev.target.result;
+      photoPreview.classList.remove('hidden');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Product upload form submit
+  productUploadForm.onsubmit = e => {
+    e.preventDefault();
+    if (!currentUser) {
+      alert('You must be logged in to sell a product.');
+      navLogin.click();
+      return;
+    }
+
+    const title = productUploadForm['title'].value.trim();
+    const description = productUploadForm['description'].value.trim();
+    const price = Number(productUploadForm['price'].value);
+    const email = productUploadForm['email'].value.trim();
+    const phone = productUploadForm['phone'].value.trim();
+
+    const file = photoInput.files[0];
+    if (!file) {
+      alert('Please upload a product photo.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = ev => {
+      // Save product data
+      const products = loadProducts();
+      const newProduct = {
+        id: 'p_' + Date.now(),
+        title,
+        description,
+        price,
+        photo: ev.target.result,
+        sellerEmail: email,
+        sellerPhone: phone,
+        sellerName: currentUser.name || 'Seller',
+        sellerCollege: currentUser.college || '',
+      };
+      products.push(newProduct);
+      saveProducts(products);
+      alert('Product uploaded successfully!');
+      productUploadForm.reset();
+      photoPreview.src = '';
+      photoPreview.classList.add('hidden');
+      navBrowse.click();
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Render products list
+  function renderProducts() {
+    const products = loadProducts();
+    productsList.innerHTML = '';
+    if (products.length === 0) {
+      productsList.innerHTML = '<p>No products available yet. Please come back later.</p>';
+      return;
+    }
+    products.forEach(product => {
+      const card = document.createElement('article');
+      card.className = 'product-card';
+      card.tabIndex = 0;
+      card.setAttribute('role', 'button');
+      card.setAttribute('aria-label', `Product: ${product.title}, Price: ₹${product.price}`);
+      card.innerHTML = `
+        <img src="${product.photo}" alt="Photo of ${product.title}" class="product-image" />
+        <h3 class="product-title">${product.title}</h3>
+        <p class="product-price">₹${product.price}</p>
+        <p class="product-desc">${product.description.length > 80 ? product.description.slice(0, 80) + '...' : product.description}</p>
+      `;
+      card.onclick = () => openProductDetails(product);
+      card.onkeypress = e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          openProductDetails(product);
+          e.preventDefault();
+        }
+      };
+      productsList.appendChild(card);
+    });
+  }
+
+  // Open product details modal
+  function openProductDetails(product) {
+    currentProduct = product;
+    modalTitle.textContent = product.title;
+    modalImage.src = product.photo;
+    modalImage.alt = `Photo of ${product.title}`;
+    modalDescription.textContent = product.description;
+    modalPrice.textContent = product.price.toFixed(2);
+    // Contact details: show phone/email (masked or full)
+    modalContact.textContent = 'Login to view contact details.';
+    contactSellerBtn.classList.add('hidden');
+    contactSellerBtn.setAttribute('aria-hidden', 'true');
+
+    if (currentUser && currentUser.email.toLowerCase() !== product.sellerEmail.toLowerCase()) {
+      // Show contact button if logged in and not the seller themselves
+      modalContact.textContent = '';
+      contactSellerBtn.classList.remove('hidden');
+      contactSellerBtn.setAttribute('aria-hidden', 'false');
+      contactSellerBtn.onclick = () => contactSeller(product);
+    }
+
+    productDetailsModal.classList.remove('hidden');
+    productDetailsModal.focus();
+  }
+
+  // Close modal
+  modalClose.onclick = () => {
+    productDetailsModal.classList.add('hidden');
+    currentProduct = null;
+  };
+  productDetailsModal.onclick = e => {
+    if (e.target === productDetailsModal) {
+      productDetailsModal.classList.add('hidden');
+      currentProduct = null;
+    }
+  };
+
+  // Contact seller via WhatsApp
+  function contactSeller(product) {
+    if (!currentUser) {
+      alert('Please login to contact the seller.');
+      navLogin.click();
+      return;
+    }
+    const sellerPhone = product.sellerPhone.replace(/\D/g, ''); // numbers only
+    if (!sellerPhone) {
+      alert('Seller phone number not available.');
+      return;
+    }
+    const message = encodeURIComponent(
+      `Hello, I want to buy your product "${product.title}" priced at ₹${product.price}.\nPlease let me know more details.\n\nBuyer: ${currentUser.name}, Email: ${currentUser.email}`
+    );
+    const waLink = `https://wa.me/${sellerPhone}?text=${message}`;
+    window.open(waLink, '_blank');
+  }
+
+  // Setup Logout button when logged in, otherwise login/register
+  function setupUserStatusUI() {
+    // Add user status button or message on nav (next to nav buttons)
+    let userStatusDiv = document.getElementById('user-status-div');
+    if (!userStatusDiv) {
+      userStatusDiv = document.createElement('div');
+      userStatusDiv.id = 'user-status-div';
+      userStatusDiv.style.marginLeft = 'auto';
+      userStatusDiv.style.fontWeight = '700';
+      userStatusDiv.style.color = '#004085';
+      document.querySelector('header').appendChild(userStatusDiv);
+    }
+    if (currentUser) {
+      userStatusDiv.innerHTML = `Hello, ${currentUser.name} | <button id="logout-btn" style="background:#dc3545; color:white; border:none; border-radius:4px; cursor:pointer; padding: 0.3rem 0.7rem; font-weight:700;">Logout</button>`;
+      document.getElementById('logout-btn').onclick = () => {
+        logout();
+        setupUserStatusUI();
+      };
+    } else {
+      userStatusDiv.innerHTML = 'Not logged in';
+    }
+  }
+
+  // On page load initialization
+  function init() {
+    initSession();
+    addDemoProductsIfNone();
+    setupUserStatusUI();
+    navBrowse.click();
+  }
+
+  init();
+</script>
+</body>
+</html>
